@@ -13,4 +13,12 @@ def create_population(cities, population_size=100):
     return population
 
 def fitness(route, cities):
-    return 1 / route_length(route, cities)  # shorter route = higher fitness
+    return 1 / route_length(route, cities)  # shorter route = higher and better fitness
+
+def tournament_selection(population, cities, k=5):
+    # Pick k random individuals, return the best one
+    selected = random.sample(population, k)
+    selected.sort(key=lambda r: fitness(r, cities), reverse=True)
+    return selected[0]
+
+#add the main loop here calling operators from Person 3!
