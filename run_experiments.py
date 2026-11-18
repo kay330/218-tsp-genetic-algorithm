@@ -2,6 +2,7 @@ import csv
 import random
 import time
 from baselines import greedy
+from ga_loop import run_ga
 from tsp import route_length
 
 def generate_cities(n):
@@ -34,6 +35,19 @@ def run_experiments():
                 "time_sec":round(exec_time,4)
             }
             results.append(result_row)
+
+            start_time=time.time()
+            ga_route, ga_length, history = run_ga(cities, seed=seed)
+            ga_time=time.time()-start_time
+            
+            ga_result_row={
+                "algorithm": "GA",
+                "n_cities": n,
+                "seed": seed,
+                "length":round(ga_length,2),
+                "time_sec":round(ga_time,4)
+            }
+            results.append(ga_result_row)
 
     file_name="experiments_results.csv"
     with open(file_name,"w",newline="") as file:
