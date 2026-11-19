@@ -1,15 +1,6 @@
 """
-ga_loop.py - Connects Person 2's GA core (ga.py) with Person 3's operators
-(operators.py) into a complete genetic algorithm.
-
-Uses from ga.py : create_population, fitness (and tournament_selection if present)
-Uses from operators.py : crossover, mutate
-
-Kept in its own file so it keeps working even if ga.py is reorganised. If
-Person 2 puts the main loop into ga.py, this file can be dropped or kept as the
-"runner" used by run_experiments.py.
-
-Usage:
+Use from ga.py : create_population, fitness (and tournament_selection if present)
+Use from operators.py : crossover, mutate
     from ga_loop import run_ga
     route, length, history = run_ga(cities, seed=1)
 """
