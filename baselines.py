@@ -29,6 +29,8 @@ def greedy(cities, start=0):
 #this code will run greedy once from EVERY node as the start, and then keep the route with shortest total
 #lenght, unlike normal greedy that depends on which city you start from.
 def greedy_best_start(cities):
+    if len(cities) < 2:
+        raise ValueError("At least 2 cities are required")
     routes = [greedy(cities, s) for s in range(len(cities))]
     return min(routes, key=lambda r: route_length(r, cities))
 
@@ -37,6 +39,8 @@ def greedy_best_start(cities):
 # possible route and keeps the shortest one. Since it checks all of them, nothing can
 # beat it. Its answer is the best route that exists."
 def brute_force(cities):
+    if len(cities) < 2:
+        raise ValueError("At least 2 cities are required")
     best_route = None
     best_length = float("inf")
 
@@ -53,6 +57,25 @@ def brute_force(cities):
 
 # 2-opt local search: reverse a section of the route whenever that makes it shorter.
 def two_opt(route, cities, max_passes=100):
+    if len(cities) < 2:
+        raise ValueError("At least 2 cities are required")
+
+    if (
+        len(route) != len(cities)
+        or sorted(route) != list(range(len(cities)))
+    ):
+        raise ValueError(
+            "Route must contain each city index exactly once"
+        )
+
+    if (
+        isinstance(max_passes, bool)
+        or not isinstance(max_passes, int)
+        or max_passes < 1
+    ):
+        raise ValueError(
+            "max_passes must be a positive integer"
+        )
     
     r = route[:]
     n = len(r)
