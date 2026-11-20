@@ -3,6 +3,7 @@ import random
 from baselines import two_opt
 from operators import crossover, mutate
 from tsp import route_length
+from config import GA
 
 # Random routes: shuffled permutations of the city numbers.
 def create_population(cities, population_size, rng):
@@ -24,10 +25,17 @@ def tournament_selection(population, lengths, k, rng):
     return population[max(picks, key=lambda i: fitness(lengths[i]))]
 
 
-def run_ga(cities, population_size=100, generations=300,
-           crossover_method="ox", mutation_method="inversion",
-           crossover_rate=0.9, mutation_rate=0.2,
-           tournament_k=5, elitism=2, memetic=False, seed=None):
+def run_ga(cities,
+    population_size=GA["population_size"],
+    generations=GA["generations"],
+    crossover_method="ox",
+    mutation_method="inversion",
+    crossover_rate=GA["crossover_rate"],
+    mutation_rate=GA["mutation_rate"],
+    tournament_k=GA["tournament_k"],
+    elitism=GA["elitism"],
+    memetic=False,
+    seed=None):
 # Run the GA. Returns (best_route, best_length, history).
 # history[g] = best length found up to generation g (for the convergence plot).
 # memetic=True applies 2-opt to the best route of every generation ("GA with 2-opt").
