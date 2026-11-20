@@ -7,7 +7,7 @@ import matplotlib
 
 from tsp import route_length
 from baselines import greedy, brute_force
-from ga_loop import run_ga
+from ga import run_ga
 
 BRUTE_FORCE_LIMIT = 10  # more cities than this and brute force takes far too long
 
