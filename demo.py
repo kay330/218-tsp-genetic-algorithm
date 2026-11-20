@@ -8,9 +8,7 @@ import matplotlib
 from tsp import route_length
 from baselines import greedy, brute_force
 from ga import run_ga
-
-BRUTE_FORCE_LIMIT = 10  # more cities than this and brute force takes far too long
-
+from config import GA, DEMO_CITIES, DEMO_SEED, BRUTE_FORCE_LIMIT
 
 # Small helpers
 def make_cities(n, seed):
@@ -125,9 +123,9 @@ def compare_operators(cities, generations, runs=5):
 # Main
 def main():
     parser = argparse.ArgumentParser(description="TSP Genetic Algorithm demo")
-    parser.add_argument("--cities", type=int, default=10, help="number of cities")
-    parser.add_argument("--generations", type=int, default=300)
-    parser.add_argument("--seed", type=int, default=42, help="makes the demo repeatable")
+    parser.add_argument("--cities", type=int, default=DEMO_CITIES, help="number of cities")
+    parser.add_argument("--generations", type=int, default=GA["generations"])
+    parser.add_argument("--seed", type=int, default=DEMO_SEED, help="makes the demo repeatable")
     parser.add_argument("--compare", action="store_true",
                         help="also compare crossover/mutation choices")
     parser.add_argument("--save", action="store_true",

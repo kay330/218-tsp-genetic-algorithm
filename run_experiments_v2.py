@@ -1,15 +1,21 @@
 import csv
 import random
 import time
-
+from config import (
+    RUNS,
+    RUNS_PARAM,
+    RUNS_BIG,
+    COMPARISON_SIZES,
+    CONSISTENCY_SIZES,
+    OPERATOR_N,
+    PARAMETER_N,
+    SCALING_SIZES
+)
 from tsp import (route_length, circle_cities, circle_optimum,
                  grid_cities, grid_optimum)
 from baselines import greedy, greedy_best_start, brute_force
 from ga import run_ga
 
-RUNS = 30          # runs per setting
-RUNS_PARAM = 15    # parameter grid is big, so fewer runs each
-RUNS_BIG = 10      # 50 and 100 cities are slow in pure Python
 FIELDS = ["experiment", "algorithm", "n_cities", "seed", "length", "time_sec", "optimum"]
 
 
@@ -44,7 +50,7 @@ def save(rows, name):
 
 def exp_comparison():                       # different map per seed
     rows = []
-    for n in (10, 20, 30):
+    for n in COMPARISON_SIZES:
         for seed in range(RUNS):
             c = make_cities(n, seed)
             r, t = timed(greedy, c)
@@ -61,7 +67,7 @@ def exp_comparison():                       # different map per seed
 
 def exp_consistency():                      # ONE fixed map, GA run 30 times
     rows = []
-    for n in (10, 30):
+    for n in CONSISTENCY_SIZES:
         c = make_cities(n, 42)
         if n == 10:
             r, t = timed(brute_force, c)
@@ -94,7 +100,7 @@ def exp_operators():                        # n = 30
     for cx in ("ox", "pmx"):
         for mu in ("swap", "inversion"):
             for seed in range(RUNS):
-                c = make_cities(30, seed)
+                c = make_cities(OPERATOR_N, seed)
                 rows.append(ga_row("operators", f"{cx}+{mu}", c, seed,
                                    crossover_method=cx, mutation_method=mu))
     save(rows, "results_operators.csv")
@@ -106,19 +112,19 @@ def exp_parameters():                       # n = 30
         for k in (3, 5):
             for mu in (0.2, 0.4):
                 for seed in range(RUNS_PARAM):
-                    c = make_cities(30, seed)
+                    c = make_cities(OPERATOR_N, seed)
                     rows.append(ga_row("parameters", f"gen={gens},k={k},mut={mu}", c, seed,
                                        generations=gens, tournament_k=k, mutation_rate=mu))
     for pop in (50, 100, 200):
         for seed in range(RUNS_PARAM):
-            c = make_cities(30, seed)
+            c = make_cities(PARAMETER_N, seed)
             rows.append(ga_row("parameters", f"pop={pop}", c, seed, population_size=pop))
     save(rows, "results_parameters.csv")
 
 
 def exp_scaling():
     rows = []
-    for n in (10, 20, 30, 50, 100):
+    for n in SCALING_SIZES:
         runs = RUNS if n <= 30 else RUNS_BIG
         for seed in range(runs):
             c = make_cities(n, seed)

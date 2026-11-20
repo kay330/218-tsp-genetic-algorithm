@@ -3,17 +3,32 @@
 GA = dict(population_size=100, generations=300, crossover_rate=0.9,
           mutation_rate=0.2, tournament_k=5, elitism=2)
 
-RUNS = 30                  # GA runs (seeds 0..29) per instance and setting
+# Basic experiments
+BASIC_SIZES = (10, 20, 30)
+BASIC_RUNS = 20
 
-BASELINE_N = 10            # cities for the brute-force comparison
-BASELINE_INSTANCES = 5     # different random city sets
+# Extended experiments
+RUNS = 30
+RUNS_PARAM = 15
+RUNS_BIG = 10
 
-OPERATOR_N = 30            # cities for the operator comparison
+# Experiment city sizes
+COMPARISON_SIZES = (10, 20, 30)
+CONSISTENCY_SIZES = (10, 30)
+OPERATOR_N = 30
+PARAMETER_N = 30
+SCALING_SIZES = (10, 20, 30, 50, 100)
+
+# Demo
+DEMO_CITIES = 10
+DEMO_SEED = 42
+BRUTE_FORCE_LIMIT = 10
+
+# Existing benchmark settings
+BASELINE_N = 10
+BASELINE_INSTANCES = 5
 OPERATOR_INSTANCES = 3
-
-SCALING_SIZES = [10, 20, 30, 50, 100]
 SCALING_INSTANCES = 3
-SCALING_RUNS = 5           # fewer runs: n=100 is slower in pure Python
-
+SCALING_RUNS = 5
 KNOWN_RUNS = 10
 KNOWN_GENERATIONS = 600
