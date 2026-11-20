@@ -1,0 +1,139 @@
+import csv
+import random
+import time
+
+from tsp import (route_length, circle_cities, circle_optimum,
+                 grid_cities, grid_optimum)
+from baselines import greedy, greedy_best_start, brute_force
+from ga import run_ga
+
+RUNS = 30          # runs per setting
+RUNS_PARAM = 15    # parameter grid is big, so fewer runs each
+RUNS_BIG = 10      # 50 and 100 cities are slow in pure Python
+FIELDS = ["experiment", "algorithm", "n_cities", "seed", "length", "time_sec", "optimum"]
+
+
+def make_cities(n, seed):
+    rng = random.Random(seed)
+    return [(rng.randint(0, 100), rng.randint(0, 100)) for _ in range(n)]
+
+
+def timed(fn, *a, **k):
+    t = time.perf_counter()
+    out = fn(*a, **k)
+    return out, time.perf_counter() - t
+
+
+def row(exp, alg, n, seed, length, t, optimum=""):
+    return dict(experiment=exp, algorithm=alg, n_cities=n, seed=seed,
+                length=round(length, 2), time_sec=round(t, 4), optimum=optimum)
+
+
+def ga_row(exp, label, cities, seed, optimum="", **kw):
+    (r, l, h), t = timed(run_ga, cities, seed=seed, **kw)
+    return row(exp, label, len(cities), seed, l, t, optimum)
+
+
+def save(rows, name):
+    with open(name, "w", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=FIELDS)
+        w.writeheader()
+        w.writerows(rows)
+    print("saved", name, flush=True)
+
+
+def exp_comparison():                       # different map per seed
+    rows = []
+    for n in (10, 20, 30):
+        for seed in range(RUNS):
+            c = make_cities(n, seed)
+            r, t = timed(greedy, c)
+            rows.append(row("comparison", "Greedy", n, seed, route_length(r, c), t))
+            r, t = timed(greedy_best_start, c)
+            rows.append(row("comparison", "Greedy-best-start", n, seed, route_length(r, c), t))
+            if n == 10:
+                r, t = timed(brute_force, c)
+                rows.append(row("comparison", "Brute force", n, seed, route_length(r, c), t))
+            rows.append(ga_row("comparison", "GA", c, seed))
+            rows.append(ga_row("comparison", "GA+2opt", c, seed, memetic=True))
+    save(rows, "results_comparison.csv")
+
+
+def exp_consistency():                      # ONE fixed map, GA run 30 times
+    rows = []
+    for n in (10, 30):
+        c = make_cities(n, 42)
+        if n == 10:
+            r, t = timed(brute_force, c)
+            rows.append(row("consistency", "Brute force", n, 0, route_length(r, c), t))
+        r, t = timed(greedy, c)
+        rows.append(row("consistency", "Greedy", n, 0, route_length(r, c), t))
+        for seed in range(RUNS):
+            rows.append(ga_row("consistency", "GA", c, seed))
+            rows.append(ga_row("consistency", "GA+2opt", c, seed, memetic=True))
+    save(rows, "results_consistency.csv")
+
+
+def exp_benchmark():                        # known optimum: circle and grid
+    rows = []
+    cases = [("circle", circle_cities(30), circle_optimum(30)),
+             ("circle", circle_cities(50), circle_optimum(50)),
+             ("grid", grid_cities(5, 6), grid_optimum(5, 6)),
+             ("grid", grid_cities(5, 10), grid_optimum(5, 10))]
+    for name, c, opt in cases:
+        for seed in range(RUNS_BIG):
+            rows.append(ga_row("benchmark", f"GA-{name}", c, seed, round(opt, 2)))
+            rows.append(ga_row("benchmark", f"GA+2opt-{name}", c, seed, round(opt, 2), memetic=True))
+        r, t = timed(greedy, c)
+        rows.append(row("benchmark", f"Greedy-{name}", len(c), 0, route_length(r, c), t, round(opt, 2)))
+    save(rows, "results_benchmark.csv")
+
+
+def exp_operators():                        # n = 30
+    rows = []
+    for cx in ("ox", "pmx"):
+        for mu in ("swap", "inversion"):
+            for seed in range(RUNS):
+                c = make_cities(30, seed)
+                rows.append(ga_row("operators", f"{cx}+{mu}", c, seed,
+                                   crossover_method=cx, mutation_method=mu))
+    save(rows, "results_operators.csv")
+
+
+def exp_parameters():                       # n = 30
+    rows = []
+    for gens in (300, 600):
+        for k in (3, 5):
+            for mu in (0.2, 0.4):
+                for seed in range(RUNS_PARAM):
+                    c = make_cities(30, seed)
+                    rows.append(ga_row("parameters", f"gen={gens},k={k},mut={mu}", c, seed,
+                                       generations=gens, tournament_k=k, mutation_rate=mu))
+    for pop in (50, 100, 200):
+        for seed in range(RUNS_PARAM):
+            c = make_cities(30, seed)
+            rows.append(ga_row("parameters", f"pop={pop}", c, seed, population_size=pop))
+    save(rows, "results_parameters.csv")
+
+
+def exp_scaling():
+    rows = []
+    for n in (10, 20, 30, 50, 100):
+        runs = RUNS if n <= 30 else RUNS_BIG
+        for seed in range(runs):
+            c = make_cities(n, seed)
+            r, t = timed(greedy, c)
+            rows.append(row("scaling", "Greedy", n, seed, route_length(r, c), t))
+            rows.append(ga_row("scaling", "GA", c, seed))
+            if n <= 50:                     # 2-opt every generation is too slow at 100
+                rows.append(ga_row("scaling", "GA+2opt", c, seed, memetic=True))
+    save(rows, "results_scaling.csv")
+
+
+if __name__ == "__main__":
+    exp_comparison()
+    exp_consistency()
+    exp_benchmark()
+    exp_operators()
+    exp_parameters()
+    exp_scaling()
