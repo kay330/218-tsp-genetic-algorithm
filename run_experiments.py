@@ -1,6 +1,7 @@
 import csv
 import random
 import time
+from config import BASIC_SIZES, BASIC_RUNS
 from baselines import greedy
 from ga import run_ga
 from tsp import route_length
@@ -16,10 +17,10 @@ def generate_cities(n):
 
 def run_experiments():
     results=[]
-    city_counts=[10,20,30]
+    city_counts=BASIC_SIZES
 
     for n in city_counts:
-        for seed in range(20):
+        for seed in range(BASIC_RUNS):
             random.seed(seed)
             cities=generate_cities(n)
 
