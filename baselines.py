@@ -29,7 +29,10 @@ def greedy_best_start(cities):
 def brute_force(cities):
     best_route = None
     best_length = float("inf")
+
     for perm in itertools.permutations(range(1, len(cities))): #tries every order of other cities after city 0, covering every possible loop.
+        if perm[0] > perm[-1]:      # reverse of a route already tried
+            continue
         route = [0] + list(perm)
         length = route_length(route, cities)
         if length < best_length:
