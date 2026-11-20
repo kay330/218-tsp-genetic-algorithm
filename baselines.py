@@ -5,7 +5,17 @@ from tsp import route_length, distance
 
 
 def greedy(cities, start=0):
-# start at 0, visit the nearest unvisited city until all cities are visited. Returns a route.
+    # start at 0, visit the nearest unvisited city until all cities are visited. Returns a route.
+    if len(cities) < 2:
+        raise ValueError("At least 2 cities are required")
+
+    if (
+        isinstance(start, bool)
+        or not isinstance(start, int)
+        or not 0 <= start < len(cities)
+    ):
+        raise ValueError("Invalid starting city index")
+
     unvisited = list(range(len(cities)))
     unvisited.remove(start)
     route = [start]
