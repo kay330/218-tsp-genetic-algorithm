@@ -81,6 +81,20 @@ def run_ga(cities,
             raise ValueError(
                 f"{name} must be between 0 and 1"
             )
+        # Check crossover and mutation methods
+    if crossover_method not in CROSSOVERS:
+        raise ValueError(
+            f"Invalid crossover method: {crossover_method}"
+        )
+
+    if mutation_method not in MUTATIONS:
+        raise ValueError(
+            f"Invalid mutation method: {mutation_method}"
+        )
+
+    # Begin Genetic Algorithm
+    rng = random.Random(seed)
+    population = create_population(cities, population_size, rng)
     lengths = [route_length(r, cities) for r in population]    # computed once per route
     i = min(range(len(population)), key=lengths.__getitem__)
     best_route, best_length = population[i][:], lengths[i]
