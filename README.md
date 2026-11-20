@@ -18,7 +18,7 @@ methods: brute force (tries every route) and greedy nearest neighbour.
 ## Install
 
 ```
-git clone https://github.com/OWNER/REPO.git
+git clone https://github.com/kay330/218-tsp-genetic-algorithm.git
 cd REPO
 pip install -r requirements.txt
 ```
@@ -54,14 +54,14 @@ All files use the same format:
 |---|---|
 | `tsp.py` | Distance between two cities and the total length of a route |
 | `baselines.py` | Brute force, greedy nearest neighbour, greedy from the best start city, and 2-opt improvement |
-| `ga.py` | GA core: creating the starting population and the fitness function |
+| `ga.py` |GA: population, fitness, tournament selection, the main loop (run_ga), optional 2-opt (memetic=True) |
 | `operators.py` | Crossover (Order Crossover, Partially Mapped Crossover) and mutation (swap, inversion) |
-| `ga_loop.py` | Connects the GA core and the operators into the full GA (`run_ga`) |
 | `run_experiments.py` | Runs the algorithms many times and saves results to a CSV file |
 | `experiments_results.csv` | Results from the experiments |
 | `demo.py` | Live demo: comparison table, route plots at different generations, convergence graph |
 | `test_operators.py` | Tests for the crossover and mutation operators |
 | `requirements.txt` | Python packages needed |
+| `test_core.py` |  |
 
 ## How the GA works (short version)
 
