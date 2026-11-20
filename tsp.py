@@ -13,7 +13,28 @@ def route_length(route, cities):
         total += distance(city_a, city_b)
     return total
 
-#Trying it on the simple route 0, 1, 2, ... 9
+def random_cities(n, rng, size=100):
+    # generates random test cities with a fixed seed for reproducibility
+    return [(rng.randint(0, size), rng.randint(0, size)) for _ in range(n)]
+
+
+# on a 30-50 stop problem brute force doesnt work, so to find out if GA is close to the optimal
+# we are using benchmarks of idealised shapes like a circle or regular polygon because the optimal 
+# route is mathematicallyknown for these shapes. The following functions generate cities in a circle 
+# or grid and return the known optimal route length.
+def circle_cities(n, radius=50):
+    return [(50 + radius * math.cos(2 * math.pi * k / n),
+             50 + radius * math.sin(2 * math.pi * k / n)) for k in range(n)]
+def circle_optimum(n, radius=50):
+    return n * 2 * radius * math.sin(math.pi / n)
+def grid_cities(rows, cols, spacing=10):
+    return [(c * spacing, r * spacing) for r in range(rows) for c in range(cols)]
+def grid_optimum(rows, cols, spacing=10):
+   
+    assert (rows * cols) % 2 == 0
+    return rows * cols * spacing
+
+#Testing
 if __name__ == "__main__":
     random.seed(42) 
     test_cities = [(random.randint(0, 100), random.randint(0, 100)) for _ in range(10)]
