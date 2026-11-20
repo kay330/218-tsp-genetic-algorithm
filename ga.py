@@ -58,6 +58,29 @@ def run_ga(cities,
             raise ValueError(
                 f"{name} must be an integer >= {minimum}"
             )
+         # Check elitism
+    if (
+        isinstance(elitism, bool)
+        or not isinstance(elitism, int)
+        or not 0 <= elitism <= population_size
+    ):
+        raise ValueError(
+            "elitism must be between 0 and population_size"
+        )
+
+    # Check crossover and mutation rates
+    for name, rate in (
+        ("crossover_rate", crossover_rate),
+        ("mutation_rate", mutation_rate),
+    ):
+        if (
+            isinstance(rate, bool)
+            or not isinstance(rate, (int, float))
+            or not 0 <= rate <= 1
+        ):
+            raise ValueError(
+                f"{name} must be between 0 and 1"
+            )
     lengths = [route_length(r, cities) for r in population]    # computed once per route
     i = min(range(len(population)), key=lengths.__getitem__)
     best_route, best_length = population[i][:], lengths[i]
