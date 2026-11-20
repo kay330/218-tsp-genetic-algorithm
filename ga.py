@@ -1,7 +1,7 @@
 import random
 
 from baselines import two_opt
-from operators import crossover, mutate
+from operators import CROSSOVERS, MUTATIONS, crossover, mutate
 from tsp import route_length
 from config import GA
 
