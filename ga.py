@@ -40,9 +40,24 @@ def run_ga(cities,
 # history[g] = best length found up to generation g (for the convergence plot).
 # memetic=True applies 2-opt to the best route of every generation ("GA with 2-opt").
 
-    rng = random.Random(seed)
-    elitism = min(elitism, population_size)
-    population = create_population(cities, population_size, rng)
+    # Check the number of cities
+    if len(cities) < 2:
+        raise ValueError("At least 2 cities are required")
+
+    # Check population size, generations and tournament size
+    for name, value, minimum in (
+        ("population_size", population_size, 2),
+        ("generations", generations, 1),
+        ("tournament_k", tournament_k, 1),
+    ):
+        if (
+            isinstance(value, bool)
+            or not isinstance(value, int)
+            or value < minimum
+        ):
+            raise ValueError(
+                f"{name} must be an integer >= {minimum}"
+            )
     lengths = [route_length(r, cities) for r in population]    # computed once per route
     i = min(range(len(population)), key=lengths.__getitem__)
     best_route, best_length = population[i][:], lengths[i]
