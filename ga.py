@@ -64,7 +64,7 @@ def run_ga(cities, population_size=100, generations=300,
             best_route, best_length = population[b][:], lengths[b]
         history.append(best_length)
 
-    k = best_route.index(0)                                     # start the route at city 0
+    k = best_route.index(0)           # start the route at city 0
     return best_route[k:] + best_route[:k], best_length, history
 
 

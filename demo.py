@@ -12,9 +12,7 @@ from ga import run_ga
 BRUTE_FORCE_LIMIT = 10  # more cities than this and brute force takes far too long
 
 
-# ----------------------------------------------------------------------------
 # Small helpers
-# ----------------------------------------------------------------------------
 def make_cities(n, seed):
     """Random cities on a 100 x 100 map. Same seed = same cities every time."""
     rng = random.Random(seed)
@@ -41,9 +39,7 @@ def draw_route(ax, cities, route, title):
     ax.set_aspect("equal", adjustable="datalim")
 
 
-# ----------------------------------------------------------------------------
 # Parts of the demo
-# ----------------------------------------------------------------------------
 def run_all_methods(cities, generations, seed):
     """Run greedy, brute force (if small) and the GA. Returns a dict of results."""
     results = {}
@@ -126,9 +122,7 @@ def compare_operators(cities, generations, runs=5):
                 cx.upper(), mu, statistics.mean(lengths), statistics.stdev(lengths)))
 
 
-# ----------------------------------------------------------------------------
 # Main
-# ----------------------------------------------------------------------------
 def main():
     parser = argparse.ArgumentParser(description="TSP Genetic Algorithm demo")
     parser.add_argument("--cities", type=int, default=10, help="number of cities")
